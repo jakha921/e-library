@@ -47,6 +47,7 @@ class Book(models.Model):
     pages = models.IntegerField(verbose_name='Sahifalar soni')
     price = models.IntegerField(verbose_name='Narxi')
     quantity = models.IntegerField(verbose_name='Soni')
+    qr_code = models.CharField(max_length=255, verbose_name='QR-kod', blank=True, null=True)
 
     def __str__(self):
         return self.title, self.author
