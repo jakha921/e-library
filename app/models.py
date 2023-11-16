@@ -31,7 +31,7 @@ class Student(models.Model):
     registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana')
 
     def __str__(self):
-        return self.hemis_id, self.full_name
+        return f'{self.full_name} - {self.course} - {self.group}'
 
     class Meta:
         verbose_name = 'Talaba'
@@ -50,7 +50,7 @@ class Book(models.Model):
     qr_code = models.CharField(max_length=255, verbose_name='QR-kod', blank=True, null=True)
 
     def __str__(self):
-        return self.title, self.author
+        return f'{self.title} - {self.author}'
 
     class Meta:
         verbose_name = 'Kitob'
@@ -65,7 +65,7 @@ class IssuedBook(models.Model):
     returned_date = models.DateField(verbose_name='Qaytarilgan sana', null=True, blank=True)
 
     def __str__(self):
-        return self.student, self.book
+        return f'{self.student} - {self.book}'
 
     class Meta:
         verbose_name = 'Berilgan kitob'
