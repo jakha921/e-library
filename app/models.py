@@ -16,6 +16,7 @@ class Student(models.Model):
     JSHSHIR = models.CharField(max_length=255, verbose_name='JSHSHIR')
     passport_given_date = models.DateField(verbose_name='Pasport berilgan sana')
     course = models.IntegerField(verbose_name='Kursi')
+    faculty = models.CharField(max_length=255, verbose_name='Fakulteti')
     group = models.CharField(max_length=255, verbose_name='Guruh')
     academic_year = models.CharField(max_length=255, verbose_name='O\'quv yili')
     semester = models.CharField(max_length=255, verbose_name='Semestr')
@@ -27,7 +28,7 @@ class Student(models.Model):
     previous_education = models.CharField(max_length=255, verbose_name='Oldingi ta\'lim')
     student_category = models.CharField(max_length=255, verbose_name='Talaba kategoriyasi')
     social_category = models.CharField(max_length=255, verbose_name='Ijtimoiy kategoriyasi')
-    comment = models.CharField(max_length=255, verbose_name='Buyruq')
+    command = models.CharField(max_length=255, verbose_name='Buyruq')
     registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana')
 
     def __str__(self):
