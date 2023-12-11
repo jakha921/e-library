@@ -3,7 +3,15 @@ from django.db import models
 
 # Create your models here.
 class Student(models.Model):
-    hemis_id = models.IntegerField(verbose_name='HEMIS ID', unique=True, editable=False)
+    group = {
+        "1-kurs": "1-kurs",
+        "2-kurs": "2-kurs",
+        "3-kurs": "3-kurs",
+        "4-kurs": "4-kurs",
+        "5-kurs": "5-kurs"
+    }
+
+    hemis_id = models.BigIntegerField(verbose_name='HEMIS ID', unique=True, editable=False)
     full_name = models.CharField(max_length=255, verbose_name='Tuliq ismi', editable=False)
     citizenship = models.CharField(max_length=255, verbose_name='Fuqaroligi')
     country = models.CharField(max_length=255, verbose_name='Mamlakati')
@@ -15,8 +23,8 @@ class Student(models.Model):
     passport = models.CharField(max_length=255, verbose_name='Pasport seriyasi')
     JSHSHIR = models.CharField(max_length=255, verbose_name='JSHSHIR')
     passport_given_date = models.DateField(verbose_name='Pasport berilgan sana')
-    course = models.IntegerField(verbose_name='Kursi')
-    faculty = models.CharField(max_length=255, verbose_name='Fakulteti')
+    course = models.CharField(max_length=255, verbose_name='Kursi', choices=group.items())
+    faculty = models.CharField(max_length=255, verbose_name='Fakulteti', blank=True, null=True)
     group = models.CharField(max_length=255, verbose_name='Guruh')
     academic_year = models.CharField(max_length=255, verbose_name='O\'quv yili')
     semester = models.CharField(max_length=255, verbose_name='Semestr')
@@ -29,10 +37,10 @@ class Student(models.Model):
     student_category = models.CharField(max_length=255, verbose_name='Talaba kategoriyasi')
     social_category = models.CharField(max_length=255, verbose_name='Ijtimoiy kategoriyasi')
     command = models.CharField(max_length=255, verbose_name='Buyruq')
-    registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana')
+    registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.full_name} - {self.course} - {self.group}'
+        return f'{self.full_name} {self.passport} - {self.course} {self.group}'
 
     class Meta:
         verbose_name = 'Talaba'
@@ -49,6 +57,7 @@ class Book(models.Model):
     price = models.IntegerField(verbose_name='Narxi')
     quantity = models.IntegerField(verbose_name='Soni')
     qr_code = models.CharField(max_length=255, verbose_name='QR-kod', blank=True, null=True)
+    link_to_book = models.CharField(max_length=255, verbose_name='Kitob havolasi', blank=True, null=True)
 
     def __str__(self):
         return f'{self.title} - {self.author}'
