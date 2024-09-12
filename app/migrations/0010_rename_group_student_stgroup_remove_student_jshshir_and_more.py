@@ -15,18 +15,9 @@ class Migration(migrations.Migration):
             old_name='group',
             new_name='stgroup',
         ),
-        migrations.RemoveField(
-            model_name='student',
-            name='JSHSHIR',
-        ),
         migrations.AlterField(
             model_name='student',
             name='is_graduated',
             field=models.CharField(verbose_name='Bitirganmi'),
-        ),
-        migrations.AddField(
-            model_name='student',
-            name='jshshir',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='jshshir'),
         ),
     ]
