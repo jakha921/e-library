@@ -10,11 +10,11 @@ admin.site.index_title = 'E-Library boshqaruv tizimi'
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('hemis_id', 'full_name', 'JSHSHIR', 'passport')
+    list_display = ('hemis_id', 'full_name', 'jshshir', 'passport')
     list_filter = ('course', 'region', 'speciality', 'form_of_education')
-    search_fields = ('hemis_id', 'full_name', 'JSHSHIR', 'passport')
+    search_fields = ('hemis_id', 'full_name', 'jshshir', 'passport')
     list_display_links = ('hemis_id',)
-    list_editable = ('JSHSHIR', 'passport')
+    list_editable = ('jshshir', 'passport')
 
 
 @admin.register(Book)
@@ -34,6 +34,7 @@ class ReturnedDateFilter(admin.SimpleListFilter):
         return (
             ('returned', 'Qaytarilgan'),
             ('not_returned', 'Qaytarilmagan'),
+            ('all', 'Barchasi')
         )
 
     def queryset(self, request, queryset):
@@ -41,6 +42,7 @@ class ReturnedDateFilter(admin.SimpleListFilter):
             return queryset.exclude(returned_date__isnull=True)
         if self.value() == 'not_returned':
             return queryset.filter(returned_date__isnull=True)
+        return queryset
 
     # Set 'not_returned' as the default value
     def value(self):
@@ -56,8 +58,8 @@ class IssuedBookAdmin(admin.ModelAdmin):
     list_filter = (ReturnedDateFilter, 'issued_date', 'book')
     search_fields = (
         'book__author', 'book__title', 'book__publisher', 'book__year', 'book__pages', 'book__price', 'book__quantity',
-        'student__hemis_id', 'student__full_name', 'student__JSHSHIR', 'student__passport', 'student__course',
-        'student__faculty', 'student__group', 'student__academic_year', 'student__semester', 'student__is_graduated',
+        'student__hemis_id', 'student__full_name', 'student__jshshir', 'student__passport', 'student__course',
+        'student__faculty', 'student__stgroup', 'student__academic_year', 'student__semester',
         'student__speciality', 'student__type_of_education', 'student__form_of_education', 'student__payment_form',
         'student__previous_education', 'student__student_category', 'student__social_category', 'student__command',
         'student__registration_date', 'issued_date', 'returned_date')

@@ -21,14 +21,15 @@ class Student(models.Model):
     gender = models.CharField(max_length=255, verbose_name='Jinsi')
     dob = models.DateField(verbose_name='Tug\'ilgan sanasi')
     passport = models.CharField(max_length=255, verbose_name='Pasport seriyasi')
-    JSHSHIR = models.CharField(max_length=255, verbose_name='JSHSHIR')
+    jshshir = models.CharField(max_length=255, verbose_name='jshshir', blank=True, null=True)
     passport_given_date = models.DateField(verbose_name='Pasport berilgan sana')
     course = models.CharField(max_length=255, verbose_name='Kursi', choices=group.items())
     faculty = models.CharField(max_length=255, verbose_name='Fakulteti', blank=True, null=True)
-    group = models.CharField(max_length=255, verbose_name='Guruh')
+    phone = models.CharField(max_length=255, verbose_name='Telefon raqami', blank=True, null=True)
+    stgroup = models.CharField(max_length=255, verbose_name='Guruh')
     academic_year = models.CharField(max_length=255, verbose_name='O\'quv yili')
     semester = models.CharField(max_length=255, verbose_name='Semestr')
-    is_graduated = models.BooleanField(verbose_name='Bitirganmi')
+    is_graduated = models.CharField(verbose_name='Bitirganmi')
     speciality = models.CharField(max_length=255, verbose_name='Yo\'nalishi')
     type_of_education = models.CharField(max_length=255, verbose_name='Ta\'lim turi')
     form_of_education = models.CharField(max_length=255, verbose_name='Ta\'lim shakli')
@@ -40,7 +41,7 @@ class Student(models.Model):
     registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.full_name} {self.passport} - {self.course} {self.group}'
+        return f'{self.full_name} | {self.passport} | {self.course}'
 
     class Meta:
         verbose_name = 'Talaba'
@@ -81,3 +82,23 @@ class IssuedBook(models.Model):
         verbose_name = 'Berilgan kitob'
         verbose_name_plural = 'Berilgan kitoblar'
         ordering = ['student']
+
+
+class TelegramUser(models.Model):
+    telegram_id = models.IntegerField(verbose_name='Telegram ID', unique=True)
+    firstname = models.CharField(max_length=255, verbose_name='Ismi', blank=True, null=True)
+    lastname = models.CharField(max_length=255, verbose_name='Familiyasi', blank=True, null=True)
+    username = models.CharField(max_length=255, verbose_name='Username', blank=True, null=True)
+    phone = models.CharField(max_length=255, verbose_name='Telefon raqami', blank=True, null=True)
+    lang_code = models.CharField(max_length=255, verbose_name='Til kodi', blank=True, null=True)
+    passport = models.CharField(max_length=255, verbose_name='Passport seriyasi', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.telegram_id} - {self.passport}'
+
+    class Meta:
+        verbose_name = 'Telegram foydalanuvchisi'
+        verbose_name_plural = 'Telegram foydalanuvchilar'
+        ordering = ['telegram_id', 'passport']
+        # set table name as 'telegram_users'
+        db_table = 'telegram_users'
