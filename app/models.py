@@ -1,5 +1,4 @@
 import datetime
-from time import timezone
 
 from django.db import models
 
@@ -81,11 +80,9 @@ class IssuedBook(models.Model):
     is_returned = models.BooleanField(verbose_name='Qaytarildimi', default=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.returned_date:
-            self.is_returned = True
+        if self.is_returned:
             self.returned_date = datetime.date.today()
         else:
-            self.is_returned = False
             self.returned_date = None
         super(IssuedBook, self).save(*args, **kwargs)
 
@@ -169,7 +166,7 @@ class Attendance(models.Model):
     time_out = models.TimeField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.student.name} - {self.date}'
+        return f'{self.student.full_name} - {self.date}'
 
     @property
     def time_spent(self):
@@ -177,3 +174,8 @@ class Attendance(models.Model):
             delta = self.time_out - self.time_in
             return delta.total_seconds() / 3600  # Время, проведенное в университете, в часах
         return 0
+
+    class Meta:
+        verbose_name = 'Davomat'
+        verbose_name_plural = 'Davomatlar'
+        ordering = ['student', 'date']
