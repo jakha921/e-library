@@ -79,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'e_library',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
+        'USER': 'libraryadmin',
+        'PASSWORD': 'lib123!',
+        'HOST': '213.230.69.57',
         'PORT': '5432',
     }
 }

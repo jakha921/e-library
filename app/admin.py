@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 
-from app.models import Student, Book, IssuedBook
+from app.models import Student, Book, IssuedBook, Attendance
 
 # Register your models here.
 admin.site.site_header = 'E-Library boshqaruv tizimi'
@@ -54,7 +54,7 @@ class ReturnedDateFilter(admin.SimpleListFilter):
 
 @admin.register(IssuedBook)
 class IssuedBookAdmin(admin.ModelAdmin):
-    list_display = ('book', 'student', 'issued_date')
+    list_display = ('book', 'student', 'issued_date', 'returned_date')
     list_filter = (ReturnedDateFilter, 'issued_date', 'book')
     search_fields = (
         'book__author', 'book__title', 'book__publisher', 'book__year', 'book__pages', 'book__price', 'book__quantity',
@@ -85,3 +85,12 @@ class IssuedBookAdmin(admin.ModelAdmin):
                               level=messages.SUCCESS)
 
         super().save_model(request, obj, form, change)
+
+
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('student', 'date', 'time_in', 'time_out', 'time_spent')
+    list_filter = ('student', 'date')
+    search_fields = ('student__name',)
+    ordering = ('student', 'date')
+    readonly_fields = ('time_spent',)

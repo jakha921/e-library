@@ -1,3 +1,6 @@
+import datetime
+from time import timezone
+
 from django.db import models
 
 
@@ -21,7 +24,7 @@ class Student(models.Model):
     gender = models.CharField(max_length=255, verbose_name='Jinsi')
     dob = models.DateField(verbose_name='Tug\'ilgan sanasi')
     passport = models.CharField(max_length=255, verbose_name='Pasport seriyasi')
-    jshshir = models.CharField(max_length=255, verbose_name='jshshir', blank=True, null=True)
+    jshshir = models.CharField(max_length=255, verbose_name='JSHSHIR', blank=True, null=True)
     passport_given_date = models.DateField(verbose_name='Pasport berilgan sana')
     course = models.CharField(max_length=255, verbose_name='Kursi', choices=group.items())
     faculty = models.CharField(max_length=255, verbose_name='Fakulteti', blank=True, null=True)
@@ -39,6 +42,7 @@ class Student(models.Model):
     social_category = models.CharField(max_length=255, verbose_name='Ijtimoiy kategoriyasi')
     command = models.CharField(max_length=255, verbose_name='Buyruq')
     registration_date = models.DateField(verbose_name='Ro\'yxatga olingan sana', blank=True, null=True)
+    is_subscribed = models.BooleanField(verbose_name='Obuna', default=False, null=True, blank=True)
 
     def __str__(self):
         return f'{self.full_name} | {self.passport} | {self.course}'
@@ -74,6 +78,16 @@ class IssuedBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='Kitob')
     issued_date = models.DateField(verbose_name='Berilgan sana', auto_now_add=True, editable=False)
     returned_date = models.DateField(verbose_name='Qaytarilgan sana', null=True, blank=True)
+    is_returned = models.BooleanField(verbose_name='Qaytarildimi', default=False, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.returned_date:
+            self.is_returned = True
+            self.returned_date = datetime.date.today()
+        else:
+            self.is_returned = False
+            self.returned_date = None
+        super(IssuedBook, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.student} - {self.book}'
@@ -102,3 +116,64 @@ class TelegramUser(models.Model):
         ordering = ['telegram_id', 'passport']
         # set table name as 'telegram_users'
         db_table = 'telegram_users'
+
+
+class Employee(models.Model):
+    full_name = models.CharField(max_length=255, verbose_name='Tuliq ismi')
+    passport = models.CharField(max_length=255, verbose_name='Pasport seriyasi', blank=True, null=True)
+    jshshir = models.CharField(max_length=255, verbose_name='jshshir', blank=True, null=True)
+    position = models.CharField(max_length=255, verbose_name='Lavozimi', blank=True, null=True)
+    department = models.CharField(max_length=255, verbose_name='Bo\'limi', blank=True, null=True)
+    phone = models.CharField(max_length=255, verbose_name='Telefon raqami', blank=True, null=True)
+    email = models.EmailField(verbose_name='Email', blank=True, null=True)
+    dob = models.DateField(verbose_name='Tug\'ilgan sanasi', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.full_name} - {self.position}'
+
+    class Meta:
+        verbose_name = 'Xodim'
+        verbose_name_plural = 'Xodimlar'
+        ordering = ['full_name']
+
+
+class IssuedBookEmployee(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='Xodim')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='Kitob')
+    issued_date = models.DateField(verbose_name='Berilgan sana', auto_now_add=True, editable=False)
+    returned_date = models.DateField(verbose_name='Qaytarilgan sana', null=True, blank=True)
+    is_returned = models.BooleanField(verbose_name='Qaytarildimi', default=False, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.returned_date:
+            self.is_returned = True
+            self.returned_date = datetime.date.today()
+        else:
+            self.is_returned = False
+            self.returned_date = None
+        super(IssuedBookEmployee, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.employee} - {self.book}'
+
+    class Meta:
+        verbose_name = 'Xodimga berilgan kitob'
+        verbose_name_plural = 'Xodimga berilgan kitoblar'
+        ordering = ['employee']
+
+
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.date.today)
+    time_in = models.TimeField(null=True, blank=True)
+    time_out = models.TimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.student.name} - {self.date}'
+
+    @property
+    def time_spent(self):
+        if self.time_in and self.time_out:
+            delta = self.time_out - self.time_in
+            return delta.total_seconds() / 3600  # Время, проведенное в университете, в часах
+        return 0
